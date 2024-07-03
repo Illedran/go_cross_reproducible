@@ -1,0 +1,25 @@
+load("@bazel_gazelle//:def.bzl", "gazelle")
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_cross_binary", "go_library")
+
+# gazelle:prefix github.com/Illedran/go_cross_reproducible
+gazelle(name = "gazelle")
+
+go_library(
+    name = "go_cross_reproducible_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/Illedran/go_cross_reproducible",
+    visibility = ["//visibility:private"],
+    deps = ["//proto"],
+)
+
+go_binary(
+    name = "go_cross_reproducible",
+    embed = [":go_cross_reproducible_lib"],
+    visibility = ["//visibility:public"],
+)
+
+go_cross_binary(
+    name = "cross",
+    platform = "@io_bazel_rules_go//go/toolchain:linux_amd64",
+    target = ":go_cross_reproducible",
+)
